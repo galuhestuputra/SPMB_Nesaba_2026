@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPMB 2026 - SMP Negeri 1 Banjar</title>
     
-    <!-- Link Font Profesional -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -29,7 +28,7 @@
             background-color: var(--bg-main); 
             color: var(--text-main); 
             line-height: 1.6; 
-            padding: 40px 20px;
+            padding: 20px;
         }
 
         .container { 
@@ -41,48 +40,82 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
         }
         
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 2.2em; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
-        header p { color: var(--text-muted); font-size: 1.1em; }
-        header .badge { 
-            display: inline-block; background: var(--primary-light); color: var(--primary);
-            padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9em;
-            margin-top: 10px; text-transform: uppercase;
+        /* === HEADER DENGAN LOGO & FOTO === */
+        header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-light);
+            gap: 20px;
         }
 
-        /* === DOWNLOAD BOX === */
+        .header-logo, .header-photo {
+            flex-shrink: 0;
+        }
+
+        .header-logo img {
+            height: 100px; /* Ukuran Logo */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-photo img {
+            height: 100px; /* Ukuran Foto */
+            width: 100px;
+            object-fit: cover;
+            border-radius: 50%; /* Membuat foto melingkar */
+            border: 3px solid var(--primary-light);
+        }
+
+        .header-text { 
+            text-align: center; 
+            flex-grow: 1;
+        }
+
+        .header-text h1 { 
+            font-size: 1.8em; 
+            font-weight: 700; 
+            color: var(--primary); 
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .header-text p { color: var(--text-muted); font-size: 1em; }
+
+        .badge { 
+            display: inline-block; background: var(--primary-light); color: var(--primary);
+            padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        /* Menu Download */
         .download-box {
             background-color: var(--primary-light);
             border: 2px dashed var(--primary);
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             margin-bottom: 40px;
             gap: 20px;
         }
-        .download-text { flex: 1; }
-        .download-text h3 { color: var(--primary); font-size: 1.1em; margin-bottom: 5px; }
-        .download-text p { font-size: 0.9em; }
         
         .btn-download {
             background-color: var(--accent);
             color: white;
             text-decoration: none;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 6px;
             font-weight: 700;
             font-size: 0.9em;
             transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
-        .btn-download:hover { background-color: #dd6b20; transform: translateY(-2px); }
 
         /* Form Styling */
         .form-section { 
-            margin-bottom: 40px; 
+            margin-bottom: 30px; 
             padding: 25px;
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -90,42 +123,34 @@
         }
         
         h2 { 
-            font-size: 1.2em; margin-bottom: 25px; color: var(--text-main);
+            font-size: 1.1em; margin-bottom: 20px; color: var(--text-main);
             display: flex; align-items: center; border-bottom: 2px solid var(--primary-light); padding-bottom: 8px;
         }
         h2::before { content: ''; width: 5px; height: 25px; background-color: var(--primary); margin-right: 12px; border-radius: 2px; }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-        label { font-weight: 600; margin-bottom: 8px; font-size: 0.9em; }
+        label { font-weight: 600; margin-bottom: 5px; font-size: 0.9em; }
         
-        input, select, textarea { padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95em; background: white; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px var(--primary-light); }
+        input, select, textarea { padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95em; }
 
-        .grade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; }
-
-        .tka-box { background-color: #fffaf0; border: 1px solid #feebc8; padding: 25px; border-radius: 10px; margin-bottom: 40px; }
+        .tka-box { background-color: #fffaf0; border: 1px solid #feebc8; padding: 25px; border-radius: 10px; margin-bottom: 30px; }
 
         button#submitBtn { 
             width: 100%; padding: 18px; background: var(--primary); color: white; border: none; 
             border-radius: 8px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px;
         }
         button#submitBtn:hover { background: var(--primary-dark); }
-        button#submitBtn:disabled { background: #cbd5e0; cursor: not-allowed; }
 
-        /* Tampilan Hasil (Alert) */
+        /* Tampilan Hasil */
         .alert { display: none; padding: 25px; margin-top: 30px; border-radius: 8px; text-align: center; }
-        .alert-success { background: #e6fffa; color: var(--success); border: 1px solid #b2f5ea; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-        .res-card { background: white; padding: 20px; border-radius: 8px; margin: 15px 0; color: var(--text-main); text-align: left; border: 1px solid #b2f5ea; }
-        .res-card strong { color: var(--primary); }
-        .score-highlight { color: #e53e3e; font-size: 1.4em; font-weight: 800; }
+        .alert-success { background: #e6fffa; color: var(--success); border: 1px solid #b2f5ea; }
+        .res-card { background: white; padding: 20px; border-radius: 10px; margin-top: 15px; text-align: left; border: 1px solid #b2f5ea; }
+        .score-highlight { color: #e53e3e; font-size: 1.5em; font-weight: 800; }
 
         @media (max-width: 768px) {
-            .download-box { flex-direction: column; text-align: center; }
+            header { flex-direction: column; text-align: center; }
             .form-grid { grid-template-columns: 1fr; }
-            textarea { grid-column: span 1; }
         }
     </style>
 </head>
@@ -133,34 +158,42 @@
 
 <div class="container">
     <header>
-        <h1>SMP Negeri 1 Banjar</h1>
-        <p>Pendaftaran Peserta Didik Baru Online 2026</p>
-        <span class="badge">Daya Tampung: 288 Siswa</span>
+        <div class="header-logo">
+            <!-- GANTI DENGAN ID LOGO SEKOLAH ANDA -->
+            <img src="https://drive.google.com/uc?export=view&id=1lvi4Lnmfyuh6SatSKfWhwtTi16ggJqLD" alt="Logo SMPN 1 Banjar">
+        </div>
+        
+        <div class="header-text">
+            <h1>SMP Negeri 1 Banjar</h1>
+            <p>Pendaftaran Peserta Didik Baru Online 2026</p>
+            <span class="badge">Aplikasi Resmi SPMB</span>
+        </div>
+
+        <div class="header-photo">
+            <!-- GANTI DENGAN ID FOTO SEKOLAH/MASKOT ANDA -->
+            <img src="https://drive.google.com/uc?export=view&id=1_M3X9kCrGGlzbG63cYaIgRqfL7p18jFF" alt="Foto Sekolah">
+        </div>
     </header>
 
-    <!-- MENU DOWNLOAD BERKAS -->
     <div class="download-box">
-        <div class="download-text">
-            <h3>Unduh Paket Berkas Pendaftaran</h3>
-            <p>Silakan unduh folder berkas (ZIP) berisi formulir dan panduan pengisian manual.</p>
+        <div style="flex: 1;">
+            <h3>Unduh Paket Berkas</h3>
+            <p>Silakan unduh formulir pendaftaran fisik dalam format ZIP.</p>
         </div>
-        <a href="https://drive.google.com/uc?export=download&id=1J4LMw6o3j2AhW6JPJAPLx4ttXCmAUIpn" class="btn-download" target="_blank">
-            📦 Download Berkas
-        </a>
+        <a href="https://drive.google.com/uc?export=download&id=1J4LMw6o3j2AhW6JPJAPLx4ttXCmAUIpn" class="btn-download">📦 Download ZIP</a>
     </div>
 
     <form id="spmbForm">
-        <!-- DATA PRIBADI -->
         <div class="form-section">
             <h2>Data Pribadi Calon Siswa</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nama Lengkap</label>
-                    <input type="text" name="nama" id="nama" placeholder="Sesuai Ijazah/Akta" required>
+                    <input type="text" name="nama" id="nama" placeholder="Sesuai Ijazah" required>
                 </div>
                 <div class="form-group">
                     <label>NISN (10 Digit)</label>
-                    <input type="number" name="nisn" placeholder="Contoh: 0123456789" required>
+                    <input type="number" name="nisn" required>
                 </div>
                 <div class="form-group">
                     <label>Jalur Pendaftaran</label>
@@ -173,42 +206,39 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Nomor WhatsApp Aktif</label>
+                    <label>Nomor WhatsApp</label>
                     <input type="tel" name="hp" placeholder="08xxxxxxxxxx" required>
                 </div>
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Alamat Domisili Lengkap</label>
-                    <textarea name="alamat" required placeholder="Jalan, RT/RW, Desa/Kelurahan, Kecamatan..."></textarea>
+                    <textarea name="alamat" required placeholder="Tuliskan alamat lengkap untuk verifikasi zonasi..."></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- NILAI RAPOR -->
         <div class="form-section">
-            <h2>Nilai Rata-rata Rapor (Semester 1-5)</h2>
+            <h2>Nilai Rata-rata Rapor (Smt 1-5)</h2>
             <div class="grade-grid">
-                <div class="form-group"><label>Agama</label><input type="number" step="0.01" name="nilai_agama" placeholder="00,00" required></div>
-                <div class="form-group"><label>Pancasila</label><input type="number" step="0.01" name="nilai_pancasila" placeholder="00,00" required></div>
-                <div class="form-group"><label>B. Indonesia</label><input type="number" step="0.01" name="nilai_bhs_indonesia" placeholder="00,00" required></div>
-                <div class="form-group"><label>Matematika</label><input type="number" step="0.01" name="nilai_matematika" placeholder="00,00" required></div>
-                <div class="form-group"><label>IPAS</label><input type="number" step="0.01" name="nilai_ipas" placeholder="00,00" required></div>
+                <div class="form-group"><label>Agama</label><input type="number" step="0.01" name="nilai_agama" required></div>
+                <div class="form-group"><label>Pancasila</label><input type="number" step="0.01" name="nilai_pancasila" required></div>
+                <div class="form-group"><label>B. Indo</label><input type="number" step="0.01" name="nilai_bhs_indonesia" required></div>
+                <div class="form-group"><label>MTK</label><input type="number" step="0.01" name="nilai_matematika" required></div>
+                <div class="form-group"><label>IPAS</label><input type="number" step="0.01" name="nilai_ipas" required></div>
             </div>
         </div>
 
-        <!-- NILAI TKA -->
         <div class="tka-box">
             <h2>Hasil Tes Kemampuan Akademik (TKA)</h2>
             <div class="form-grid">
-                <div class="form-group"><label>TKA Matematika</label><input type="number" step="0.01" name="nilai_tka_matematika" placeholder="00,00" required></div>
-                <div class="form-group"><label>TKA Bahasa Indonesia</label><input type="number" step="0.01" name="nilai_tka_bahasa" placeholder="00,00" required></div>
+                <div class="form-group"><label>TKA Matematika</label><input type="number" step="0.01" name="nilai_tka_matematika" required></div>
+                <div class="form-group"><label>TKA B. Indo</label><input type="number" step="0.01" name="nilai_tka_bahasa" required></div>
             </div>
         </div>
 
-        <!-- KEJUARAAN -->
         <div class="form-section">
-            <h2>Prestasi / Kejuaraan (Jika Ada)</h2>
+            <h2>Prestasi / Kejuaraan</h2>
             <div class="form-grid">
-                <div class="form-group"><label>Nama Kejuaraan</label><input type="text" name="nama_kejuaraan" placeholder="Contoh: Juara 1 OSN"></div>
+                <div class="form-group"><label>Nama Lomba</label><input type="text" name="nama_kejuaraan"></div>
                 <div class="form-group">
                     <label>Tingkat</label>
                     <select name="tingkat_kejuaraan">
@@ -239,18 +269,11 @@
 </div>
 
 <script>
-    /**
-     * KONFIGURASI: Ganti dengan URL Web App dari Google Apps Script Anda.
-     */
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxJXF7a6FMM6Kd1n4YRgX8U8JWAblF2GQ8D-i5hnRMhEp9-pshtESgAglwO68HVSJ8Chg/exec'; 
-    
     const form = document.getElementById('spmbForm');
     const btnSubmit = document.getElementById('submitBtn');
     const alertBox = document.getElementById('successMsg');
 
-    /**
-     * Fungsi untuk mengubah format angka 00.00 menjadi 00,00
-     */
     function formatIndo(angka) {
         return parseFloat(angka).toLocaleString('id-ID', { 
             minimumFractionDigits: 2, 
@@ -260,29 +283,27 @@
 
     form.addEventListener('submit', e => {
         e.preventDefault();
-        btnSubmit.innerHTML = 'Sedang Memproses...';
+        btnSubmit.innerHTML = 'Sedang Mengirim...';
         btnSubmit.disabled = true;
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(response => response.json())
         .then(result => {
             const namaSiswa = document.getElementById('nama').value;
-            
             alertBox.innerHTML = `
-                <div style="font-size: 1.4em; margin-bottom: 15px; font-weight:700;">✨ PENDAFTARAN BERHASIL ✨</div>
+                <div style="font-size: 1.5em; margin-bottom: 15px; font-weight:700;">✨ PENDAFTARAN BERHASIL ✨</div>
                 <div class="res-card">
-                    <div style="margin-bottom: 8px;">No. Pendaftaran: <strong style="font-size: 1.2em;">${result.no_reg}</strong></div>
-                    <div style="margin-bottom: 8px;">Nama Lengkap: <strong>${namaSiswa}</strong></div>
-                    <div style="margin-bottom: 8px;">NISN: <strong>${result.nisn}</strong></div>
-                    <div style="margin-bottom: 8px;">Jarak Domisili: <strong>${result.jarak} Meter</strong></div>
-                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e0;">
+                    <div>No. Pendaftaran: <strong>${result.no_reg}</strong></div>
+                    <div>Nama: <strong>${namaSiswa}</strong></div>
+                    <div>NISN: <strong>${result.nisn}</strong></div>
+                    <div>Jarak: <strong>${result.jarak} Meter</strong></div>
+                    <div style="margin-top: 15px; border-top: 1px dashed #cbd5e0; padding-top: 10px;">
                         Skor Akademik Akhir (40:60): <br>
                         <span class="score-highlight">${formatIndo(result.skor)}</span>
                     </div>
                 </div>
-                <p style="font-size: 0.85em; margin-top: 15px;">Harap simpan bukti pendaftaran ini untuk verifikasi berkas selanjutnya.</p>
+                <p style="font-size: 0.85em; margin-top: 15px;">Simpan bukti ini untuk verifikasi berkas selanjutnya.</p>
             `;
-            
             alertBox.style.display = 'block';
             form.reset();
             btnSubmit.innerHTML = 'Kirim Pendaftaran Online';
@@ -290,8 +311,7 @@
             alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         })
         .catch(error => {
-            console.error('Error!', error.message);
-            alert('Gagal mengirim pendaftaran. Periksa koneksi internet atau URL Script Anda.');
+            alert('Gagal mengirim pendaftaran. Cek koneksi atau URL Script.');
             btnSubmit.innerHTML = 'Kirim Pendaftaran Online';
             btnSubmit.disabled = false;
         });
