@@ -186,18 +186,21 @@
         .then(res => {
             clearInterval(loading);
             alertBox.style.display = 'block';
+            
+            // Konversi skor ke format desimal Indonesia (koma)
+            const skorAngka = parseFloat(res.skor);
+            const skorFormatted = isNaN(skorAngka) ? "0,00" : skorAngka.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
             alertBox.innerHTML = `
                 <div style="font-size: 1.3em; font-weight:700; color:var(--primary);">✨ PENDAFTARAN BERHASIL ✨</div>
                 <div class="res-card">
-                    <div>No. Registrasi: <strong style="color:var(--primary); font-size:1.1em;">${res.no_reg}</strong></div>
+                    <div>No. Registrasi: <strong style="color:var(--primary)">${res.no_reg}</strong></div>
                     <div>Nama Lengkap: <strong>${document.getElementById('nama').value}</strong></div>
-                    <div>NISN: <strong>${document.getElementById('nisn').value}</strong></div>
                     <div style="margin-top:10px; border:none;">
                         Skor Akademik Akhir (40:60):
-                        <span class="score-val">${parseFloat(res.skor).toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                        <span style="font-size: 1.6em; color: #e53e3e; font-weight: 800; display: block;">${skorFormatted}</span>
                     </div>
                 </div>
-                <p style="font-size: 0.85em; color: #718096; margin-top: 15px;">Simpan No. Registrasi ini sebagai bukti pendaftaran sementara.</p>
             `;
             form.reset();
             btn.disabled = false;
