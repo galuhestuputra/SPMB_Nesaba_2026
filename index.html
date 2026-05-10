@@ -167,32 +167,51 @@
         reader.readAsArrayBuffer(e.target.files[0]);
     });
 
+    // KIRIM DATA KE GOOGLE SHEETS
     const form = document.getElementById('spmbForm');
+    const btn = document.getElementById('submitBtn');
+    const alertBox = document.getElementById('successMsg');
+
     form.addEventListener('submit', e => {
         e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerHTML = 'Sedang Mengirim...';
+        btn.disabled = true;
+        let dots = 0;
+        const loading = setInterval(() => {
+            dots = (dots + 1) % 4;
+            btn.innerHTML = 'Sedang Mengirim Data' + '.'.repeat(dots);
+        }, 400);
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(res => res.json())
         .then(res => {
-            const alertBox = document.getElementById('successMsg');
+            clearInterval(loading);
             alertBox.style.display = 'block';
             alertBox.innerHTML = `
-                <div style="font-weight:700; color:var(--primary); font-size:1.2em;">✨ PENDAFTARAN BERHASIL ✨</div>
+                <div style="font-size: 1.3em; font-weight:700; color:var(--primary);">✨ PENDAFTARAN BERHASIL ✨</div>
                 <div class="res-card">
-                    <div>No. Registrasi: <strong style="color:var(--primary)">${res.no_reg}</strong></div>
-                    <div>Nama: <strong>${document.getElementById('nama').value}</strong></div>
-                    <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
-                        Skor Akademik Akhir (40:60): <br>
-                        <span style="font-size:1.5em; color:#e53e3e; font-weight:800;">${res.skor.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+                    <div>No. Registrasi: <strong style="color:var(--primary); font-size:1.1em;">${res.no_reg}</strong></div>
+                    <div>Nama Lengkap: <strong>${document.getElementById('nama').value}</strong></div>
+                    <div>NISN: <strong>${document.getElementById('nisn').value}</strong></div>
+                    <div style="margin-top:10px; border:none;">
+                        Skor Akademik Akhir (40:60):
+                        <span class="score-val">${parseFloat(res.skor).toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
                     </div>
                 </div>
+                <p style="font-size: 0.85em; color: #718096; margin-top: 15px;">Simpan No. Registrasi ini sebagai bukti pendaftaran sementara.</p>
             `;
-            form.reset(); btn.disabled = false; btn.innerHTML = 'KIRIM DATA PENDAFTARAN';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            form.reset();
+            btn.disabled = false;
+            btn.innerHTML = 'KIRIM DATA PENDAFTARAN';
+            alertBox.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(err => {
+            clearInterval(loading);
+            alert("Terjadi kesalahan saat mengirim data. Periksa koneksi internet atau URL Script Anda.");
+            btn.disabled = false;
+            btn.innerHTML = 'KIRIM DATA PENDAFTARAN';
         });
     });
 </script>
+
 </body>
 </html>
