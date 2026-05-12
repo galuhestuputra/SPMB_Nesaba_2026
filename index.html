@@ -146,12 +146,32 @@
             </div>
         </div>
 
+<!-- SEKSI 3: TKA & KEJUARAAN -->
         <div class="form-sec" style="background: #fffaf0;">
-            <h2>Hasil Tes TKA & Prestasi</h2>
+            <h2>Hasil Tes TKA & Prestasi Kejuaraan</h2>
             <div class="grid">
                 <div class="form-group"><label>TKA Matematika</label><input type="number" step="0.01" name="tka_mtk" id="tka_mtk" required></div>
                 <div class="form-group"><label>TKA B. Indonesia</label><input type="number" step="0.01" name="tka_indo" id="tka_indo" required></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Nama Kejuaraan / Prestasi</label><input type="text" name="nama_kejuaraan" id="kj"></div>
+                <div class="form-group"><label>Nama Kejuaraan</label><input type="text" name="nama_kejuaraan" id="nama_kejuaraan" placeholder="Isi '-' jika tidak ada"></div>
+                <div class="form-group">
+                    <label>Tingkat</label>
+                    <select name="tingkat_kejuaraan" id="tingkat_kejuaraan">
+                        <option value="-">- Tidak Ada -</option>
+                        <option value="Internasional">Internasional</option>
+                        <option value="Nasional">Nasional</option>
+                        <option value="Provinsi">Provinsi</option>
+                        <option value="Kota/Kab.">Kota/Kab.</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Peringkat / Juara</label>
+                    <select name="perolehan_kejuaraan" id="perolehan_kejuaraan">
+                        <option value="-">- Tidak Ada -</option>
+                        <option value="Juara I">Juara I</option>
+                        <option value="Juara II">Juara II</option>
+                        <option value="Juara III">Juara III</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -162,10 +182,11 @@
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxJXF7a6FMM6Kd1n4YRgX8U8JWAblF2GQ8D-i5hnRMhEp9-pshtESgAglwO68HVSJ8Chg/exec';
+    // 1. KONFIGURASI URL
+    const scriptURL = 'GANTI_DENGAN_URL_WEB_APP_BAPAK';
     const subjects = [{id:'Agama',l:'Agama'},{id:'Pancasila',l:'Pancasila'},{id:'Indo',l:'B. Indo'},{id:'MTK',l:'MTK'},{id:'IPAS',l:'IPAS'}];
     
-    // Generate Tabel Nilai
+    // 2. GENERATE TABEL NILAI
     const tbody = document.getElementById('gradeBody');
     subjects.forEach(s => {
         let row = `<tr><td style="text-align:left; font-weight:700; color:var(--primary);">${s.l}</td>`;
@@ -173,48 +194,72 @@
         tbody.innerHTML += row + `</tr>`;
     });
 
- // LOAD QUOTA SAAT HALAMAN DIBUKA
-window.onload = () => {
+    // 3. LOAD KUOTA (doGet)
+    window.onload = () => {
         fetch(scriptURL).then(res => res.json()).then(data => {
             for(let j in data) {
                 const el = document.getElementById('q-' + j);
                 if(el) { el.innerText = data[j]; if(data[j] <= 5) el.classList.add('q-low'); }
             }
-        });
+        }).catch(e => console.log("Kuota belum sinkron"));
     };
 
+    // 4. LOGIKA UPLOAD EXCEL (Sinkronisasi Tingkat & Peringkat)
     document.getElementById('xlFile').addEventListener('change', e => {
         const reader = new FileReader();
         reader.onload = f => {
-            const row = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(f.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(f.target.result),{type:'array'}).SheetNames[0]])[0];
-            document.getElementById('nama').value = row.Nama || '';
+            const workbook = XLSX.read(new Uint8Array(f.target.result), {type:'array'});
+            const row = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])[0];
+            
+            // Map Identitas
+            document.getElementById('nama').value = row['Nama Siswa'] || row['Nama'] || '';
             document.getElementById('nama_ortu').value = row['Nama Orang Tua'] || '';
-            document.getElementById('nik').value = row.NIK || '';
-            document.getElementById('jk').value = row['Jenis Kelamin'] || 'Laki-laki';
-            document.getElementById('nisn').value = row.NISN || '';
-            document.getElementById('jalur').value = row.Jalur || 'Prestasi';
-            document.getElementById('hp').value = row.WhatsApp || '';
-            document.getElementById('alamat').value = row.Alamat || '';
-            subs.forEach(s => { for(let i=1; i<=5; i++) { let k=`${s.id}_${i}`; if(row[k]) document.getElementById(k).value=row[k]; } });
-            if(row.TKA_MTK) document.getElementById('tka_mtk').value = row.TKA_MTK;
-            if(row.TKA_Indo) document.getElementById('tka_indo').value = row.TKA_Indo;
-            if(row.Kejuaraan_Nama) document.getElementById('kj').value = row.Kejuaraan_Nama;
-            if(row.Kejuaraan_Tingkat) document.getElementById('kj_tingkat').value = row.Kejuaraan_Tingkat;
-            if(row.Kejuaraan_Peringkat) document.getElementById('kj_peringkat').value = row.Kejuaraan_Peringkat;
-            alert("✅ Sinkron Berhasil!");
+            document.getElementById('nik').value = row['NIK'] || '';
+            document.getElementById('nisn').value = row['NISN'] || '';
+            document.getElementById('jalur').value = row['Jalur'] || 'Prestasi';
+            document.getElementById('hp').value = row['WhatsApp'] || '';
+            document.getElementById('alamat').value = row['Alamat'] || '';
+
+            // Map 25 Nilai
+            subjects.forEach(s => { for(let i=1; i<=5; i++){ let k=`${s.id}_${i}`; if(row[k]) document.getElementById(k).value=row[k]; } });
+            
+            // Map TKA & Kejuaraan
+            if(row['TKA_MTK']) document.getElementById('tka_mtk').value = row['TKA_MTK'];
+            if(row['TKA_Indo']) document.getElementById('tka_indo').value = row['TKA_Indo'];
+            if(row['Nama_Kejuaraan']) document.getElementById('nama_kejuaraan').value = row['Nama_Kejuaraan'];
+            if(row['Tingkat']) document.getElementById('tingkat_kejuaraan').value = row['Tingkat'];
+            if(row['Peringkat']) document.getElementById('perolehan_kejuaraan').value = row['Peringkat'];
+
+            alert("✅ Sinkronisasi Berhasil!");
         };
         reader.readAsArrayBuffer(e.target.files[0]);
     });
 
-    document.getElementById('regForm').addEventListener('submit', e => {
+    // 5. SUBMIT DATA (doPost)
+    const form = document.getElementById('spmbForm');
+    const btn = document.getElementById('btnSub');
+    form.addEventListener('submit', e => {
         e.preventDefault();
-        const b = document.getElementById('btnSub'); b.disabled = true; b.innerText = 'Mengirim...';
-        fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
+        btn.disabled = true; btn.innerText = 'Sedang Mengirim...';
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
         .then(res => res.json()).then(res => {
-            const m = document.getElementById('msg'); m.style.display = 'block';
-            m.innerHTML = `<strong>PENDAFTARAN SUKSES!</strong><div class="res-card">No. Reg: <strong>${res.no_reg}</strong><br>Skor: <strong>${res.skor.toLocaleString('id-ID',{minimumFractionDigits:2})}</strong></div>`;
-            e.target.reset(); b.disabled = false; b.innerText = 'KIRIM PENDAFTARAN';
+            const m = document.getElementById('msg');
+            m.style.display = 'block';
+            m.innerHTML = `
+                <div style="font-weight:700; color:var(--primary); font-size:1.2em;">✨ PENDAFTARAN BERHASIL ✨</div>
+                <div class="res-card">
+                    No. Registrasi: <strong style="color:var(--primary)">${res.no_reg}</strong><br>
+                    Nama Siswa: <strong>${document.getElementById('nama').value}</strong><br>
+                    Estimasi Skor Akhir: <strong style="color:#e53e3e; font-size:1.4em;">${res.skor.toLocaleString('id-ID',{minimumFractionDigits:2})}</strong>
+                </div>
+                <p style="font-size:0.8em; color:#718096; margin-top:10px;">Simpan No. Registrasi di atas sebagai bukti pendaftaran.</p>
+            `;
+            form.reset(); btn.disabled = false; btn.innerText = 'KIRIM DATA PENDAFTARAN';
             m.scrollIntoView({ behavior: 'smooth' });
+        }).catch(err => {
+            alert("Terjadi kesalahan koneksi. Silakan coba lagi.");
+            btn.disabled = false; btn.innerText = 'KIRIM DATA PENDAFTARAN';
         });
     });
 </script>
