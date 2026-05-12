@@ -173,26 +173,20 @@
         tbody.innerHTML += row + `</tr>`;
     });
 
-    // LOAD QUOTA SAAT HALAMAN DIBUKA
+ // LOAD QUOTA SAAT HALAMAN DIBUKA
     window.onload = () => {
-        fetch(scriptURL).then(res => res.json()).then(data => {
-            for(let jalur in data) {
-                const el = document.getElementById('q-' + jalur);
-                if(el) { 
-                    el.innerText = data[jalur]; 
-                    if(data[jalur] <= 5) el.classList.add('q-low');
-                }
+fetch(scriptURL).then(res => res.json()).then(data => {
+            for(let j in data) {
+                const el = document.getElementById('q-' + j);
+                if(el) { el.innerText = data[j]; if(data[j] <= 5) el.classList.add('q-low'); }
             }
-        }).catch(err => console.log("Gagal memuat kuota"));
+        });
     };
 
-    // LOGIKA UPLOAD EXCEL
     document.getElementById('xlFile').addEventListener('change', e => {
         const reader = new FileReader();
         reader.onload = f => {
-            const data = new Uint8Array(f.target.result);
-            const row = XLSX.utils.sheet_to_json(XLSX.read(data,{type:'array'}).Sheets[XLSX.read(data,{type:'array'}).SheetNames[0]])[0];
-            
+            const row = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(f.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(f.target.result),{type:'array'}).SheetNames[0]])[0];
             document.getElementById('nama').value = row.Nama || '';
             document.getElementById('nama_ortu').value = row['Nama Orang Tua'] || '';
             document.getElementById('nik').value = row.NIK || '';
@@ -201,42 +195,26 @@
             document.getElementById('jalur').value = row.Jalur || 'Prestasi';
             document.getElementById('hp').value = row.WhatsApp || '';
             document.getElementById('alamat').value = row.Alamat || '';
-            
-            // Map 25 Nilai
-            subjects.forEach(s => { for(let i=1; i<=5; i++) { let k=`${s.id}_${i}`; if(row[k]) document.getElementById(k).value=row[k]; } });
-            
+            subs.forEach(s => { for(let i=1; i<=5; i++) { let k=`${s.id}_${i}`; if(row[k]) document.getElementById(k).value=row[k]; } });
             if(row.TKA_MTK) document.getElementById('tka_mtk').value = row.TKA_MTK;
             if(row.TKA_Indo) document.getElementById('tka_indo').value = row.TKA_Indo;
-            
-            alert("✅ Sinkronisasi Berhasil!");
+            if(row.Kejuaraan_Nama) document.getElementById('kj').value = row.Kejuaraan_Nama;
+            if(row.Kejuaraan_Tingkat) document.getElementById('kj_tingkat').value = row.Kejuaraan_Tingkat;
+            if(row.Kejuaraan_Peringkat) document.getElementById('kj_peringkat').value = row.Kejuaraan_Peringkat;
+            alert("✅ Sinkron Berhasil!");
         };
         reader.readAsArrayBuffer(e.target.files[0]);
     });
 
-    // SUBMIT DATA
-    const form = document.getElementById('spmbForm');
-    const btn = document.getElementById('btnSub');
-    form.addEventListener('submit', e => {
+    document.getElementById('regForm').addEventListener('submit', e => {
         e.preventDefault();
-        btn.disabled = true; btn.innerText = 'Mengirim...';
-        
-        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        const b = document.getElementById('btnSub'); b.disabled = true; b.innerText = 'Mengirim...';
+        fetch(scriptURL, { method: 'POST', body: new FormData(e.target) })
         .then(res => res.json()).then(res => {
-            const msg = document.getElementById('msg');
-            msg.style.display = 'block';
-            msg.innerHTML = `
-                <div style="font-weight:700; color:var(--primary);">✨ PENDAFTARAN SUKSES ✨</div>
-                <div class="res-card">
-                    No. Registrasi: <strong>${res.no_reg}</strong><br>
-                    Nama Siswa: <strong>${document.getElementById('nama').value}</strong><br>
-                    Skor Akademik Akhir: <strong style="color:#e53e3e; font-size:1.4em;">${res.skor.toLocaleString('id-ID', {minimumFractionDigits:2})}</strong>
-                </div>
-            `;
-            form.reset(); btn.disabled = false; btn.innerText = 'KIRIM DATA PENDAFTARAN';
-            msg.scrollIntoView({ behavior: 'smooth' });
-        }).catch(err => {
-            alert("Terjadi kesalahan koneksi.");
-            btn.disabled = false; btn.innerText = 'KIRIM DATA PENDAFTARAN';
+            const m = document.getElementById('msg'); m.style.display = 'block';
+            m.innerHTML = `<strong>PENDAFTARAN SUKSES!</strong><div class="res-card">No. Reg: <strong>${res.no_reg}</strong><br>Skor: <strong>${res.skor.toLocaleString('id-ID',{minimumFractionDigits:2})}</strong></div>`;
+            e.target.reset(); b.disabled = false; b.innerText = 'KIRIM PENDAFTARAN';
+            m.scrollIntoView({ behavior: 'smooth' });
         });
     });
 </script>
