@@ -174,8 +174,8 @@
     });
 
  // LOAD QUOTA SAAT HALAMAN DIBUKA
-    window.onload = () => {
-fetch(scriptURL).then(res => res.json()).then(data => {
+window.onload = () => {
+        fetch(scriptURL).then(res => res.json()).then(data => {
             for(let j in data) {
                 const el = document.getElementById('q-' + j);
                 if(el) { el.innerText = data[j]; if(data[j] <= 5) el.classList.add('q-low'); }
