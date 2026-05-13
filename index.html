@@ -244,26 +244,58 @@
 
     // 4. Excel Import
     document.getElementById('xlFile').addEventListener('change', e => {
-        const reader = new FileReader();
-        reader.onload = f => {
-            const row = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(f.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(f.target.result),{type:'array'}).SheetNames[0]])[0];
-            const setV = (id, keys) => { const k = keys.find(k => row[k]); if(k) document.getElementById(id).value = row[k]; };
-            
-            setV('nama', ['Nama Siswa', 'Nama']); setV('nama_ortu', ['Nama Orang Tua', 'Nama Ortu']);
-            setV('nik', ['NIK']); setV('nisn', ['NISN']); setV('hp', ['WhatsApp', 'WA']); setV('alamat', ['Alamat']);
-            setV('jalur', ['Jalur']);
-            
+    const reader = new FileReader();
+    reader.onload = f => {
+        try {
+            const data = new Uint8Array(f.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.SheetNames[0];
+            const row = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet])[0];
+
+            if (!row) return alert("File Excel kosong!");
+
+            // FUNGSI PENCARI KOLOM (Case-Insensitive & Fleksibel)
+            const getVal = (variasi) => {
+                const keys = Object.keys(row);
+                // Mencari key yang mengandung kata dalam variasi (abaikan besar/kecil huruf)
+                const foundKey = keys.find(k => 
+                    variasi.some(v => k.toLowerCase().trim() === v.toLowerCase().trim())
+                );
+                return foundKey ? row[foundKey] : "";
+            };
+
+            // 1. IDENTITAS (WhatsApp & Alamat sering terlewat di sini)
+            document.getElementById('nama').value = getVal(['Nama Siswa', 'Nama', 'NAMA']);
+            document.getElementById('nama_ortu').value = getVal(['Nama Orang Tua', 'Nama Ortu', 'Orang Tua']);
+            document.getElementById('nik').value = getVal(['NIK', 'Nik', 'N.I.K']);
+            document.getElementById('hp').value = getVal(['WhatsApp', 'WA', 'WhatsApp Aktif', 'Nomor HP', 'HP']);
+            document.getElementById('alamat').value = getVal(['Alamat', 'ALAMAT', 'Alamat Lengkap']);
+            document.getElementById('jalur').value = getVal(['Jalur', 'JALUR', 'Pilihan Jalur']) || 'Prestasi';
+
+            // 2. MAPPING 25 NILAI RAPOR (Agama_1 sampai IPAS_5)
+            // Pastikan array 'subjects' sudah didefinisikan di atas (Agama, Pancasila, Indo, MTK, IPAS)
             subjects.forEach(s => {
-                for(let i=1; i<=5; i++) {
-                    const id = s + '_' + i;
-                    const val = row[id] || row[s + ' ' + i];
-                    if(val) document.getElementById(id).value = val;
+                for (let i = 1; i <= 5; i++) {
+                    const idInput = s.id + '_' + i; // ID di HTML (Contoh: Agama_1)
+                    // Mencari variasi di Excel: "Agama_1", "Agama 1", "Agama1"
+                    const valNilai = getVal([idInput, s.id + ' ' + i, s.id + i]);
+                    if (valNilai !== "") {
+                        document.getElementById(idInput).value = valNilai;
+                    }
                 }
             });
-            setV('tka_mtk', ['TKA_MTK', 'TKA Matematika']); setV('tka_indo', ['TKA_Indo', 'TKA Indo']);
-            alert("Excel Berhasil Dimuat!");
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
+
+            // 3. TKA & KEJUARAAN
+            document.getElementById('tka_mtk').value = getVal(['TKA_MTK', 'TKA Matematika', 'MTK TKA']);
+            document.getElementById('tka_indo').value = getVal(['TKA_Indo', 'TKA B. Indo', 'Indo TKA']);
+            
+            alert("✅ Sinkronisasi Berhasil! WhatsApp dan Nilai sudah terisi.");
+        } catch (err) {
+            alert("Gagal membaca Excel: " + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+});
     });
 
     // 5. Submit Form
